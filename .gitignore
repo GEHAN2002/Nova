@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+
+assets/voices/
+tools/piper/
+
+speech.wav
+*.wav
