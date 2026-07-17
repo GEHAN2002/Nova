@@ -1,6 +1,6 @@
-# Nova - JARVIS-Level Windows Voice Assistant
+# Nova - Nova-Level Windows Voice Assistant
 
-Nova is a local-first Windows assistant with typed commands, microphone input, offline speech recognition, a bundled female Piper voice, live file indexing, full-screen window control, JARVIS-grade conversational memory, advanced NLP, system monitoring, and extensible skill plugins.
+Nova is a local-first Windows assistant with typed commands, microphone input, offline speech recognition, a bundled female Piper voice, live file indexing, full-screen window control, Nova-grade AI reasoning, and more.
 
 ## 🚀 Install and start
 
@@ -12,7 +12,7 @@ Nova is a local-first Windows assistant with typed commands, microphone input, o
    .\.venv\Scripts\Activate.ps1
    ```
 
-3. Install requirements (including new dependencies for JARVIS features):
+3. Install requirements (including new dependencies for Nova features):
 
    ```powershell
    pip install -r requirements.txt
@@ -23,7 +23,7 @@ On its first start Nova creates local indexes of Start-menu applications and you
 
 ---
 
-## ✨ New JARVIS-Level Features (Enhanced Edition)
+## ✨ New Nova-Level Features (Enhanced Edition)
 
 ### 1. **Conversational Memory & Context**
 Nova now remembers your conversation history and preferences:
@@ -292,7 +292,7 @@ Edit `config.py` to customize:
 
 ## 🔧 New Requirements
 
-The JARVIS-level features require these additional packages:
+The Nova-level features require these additional packages:
 
 ```
 psutil>=5.9.0          # System monitoring
