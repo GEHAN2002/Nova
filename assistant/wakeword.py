@@ -4,7 +4,7 @@ from config import WAKE_PHRASES
 
 
 def wait_for_wake_word() -> bool:
-    print("Waiting for 'Hi Nova' (or press Enter to type a command)...")
+    print("Waiting for 'Nova' (or press Enter to type a command)...")
     while True:
         heard = listen(seconds=3)
         if any(phrase in heard for phrase in WAKE_PHRASES):
