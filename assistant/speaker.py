@@ -12,7 +12,10 @@ def speak(text: str) -> None:
     if not text:
         return
     print(f"Nova: {text}")
-    if not PIPER_PATH.exists() or not VOICE_MODEL.exists():
+    config_path = VOICE_MODEL.with_suffix(f"{VOICE_MODEL.suffix}.json")
+    missing = [path for path in (PIPER_PATH, VOICE_MODEL, config_path) if not path.exists()]
+    if missing:
+        print("Voice output unavailable. Missing: " + ", ".join(str(path) for path in missing))
         return
     output = Path(tempfile.gettempdir()) / "nova_speech.wav"
     try:
@@ -22,7 +25,7 @@ def speak(text: str) -> None:
         )
         subprocess.run(
             ["powershell", "-NoProfile", "-Command", f"(New-Object Media.SoundPlayer '{output}').PlaySync()"],
-            check=False, capture_output=True,
+            check=True, capture_output=True, text=True,
         )
     except (OSError, subprocess.SubprocessError) as error:
         print(f"Voice output unavailable: {error}")
