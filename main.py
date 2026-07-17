@@ -5,7 +5,9 @@ from assistant.speaker import speak
 from assistant.voice import listen
 from assistant.wakeword import wait_for_wake_word
 from assistant.mobile_bridge import start_mobile_bridge
+from assistant.fullscreen_control import get_fullscreen_controller
 from system.monitor import start_monitor
+from config import AUTO_SCAN_ON_STARTUP
 
 
 def bootstrap_indexes() -> None:
@@ -25,21 +27,73 @@ def bootstrap_indexes() -> None:
         scan_files()
 
 
+def perform_full_scan() -> None:
+    """Perform full computer scan on startup if enabled."""
+    if AUTO_SCAN_ON_STARTUP:
+        speak("Performing full system scan on startup.")
+        try:
+            from system.full_computer_scanner import run_full_computer_scan
+            result = run_full_computer_scan()
+            if result.get("status") == "complete":
+                speak(f"System scan complete. Indexed {result.get('files_indexed', 0)} files.")
+        except Exception as error:
+            print(f"Full scan error: {error}")
+            speak("System scan encountered an error.")
+
+
 def main() -> None:
     handler = CommandHandler()
     bootstrap_indexes()
+    perform_full_scan()
     monitor = start_monitor()
+    fullscreen = get_fullscreen_controller()
     start_mobile_bridge(handler.handle)
-    speak("Nova is ready. Say Hi Nova, or type a command.")
+    speak("Nova is ready. Say Nova, or type a command.")
     try:
         while True:
-            text = input("Nova command (Enter to wait for 'Hi Nova'): ").strip()
+            text = input("Nova command (Enter to wait for 'Nova'): ").strip()
             if not text:
                 wait_for_wake_word()
                 speak("Yes?")
                 text = listen()
             if not text: continue
-            if text.lower() in {"stop nova", "exit", "quit"}: speak("Goodbye."); break
+            
+            # Handle fullscreen commands
+            if text.lower() in {"fullscreen", "full screen"}:
+                fullscreen.toggle_fullscreen()
+                speak("Fullscreen toggled.")
+                continue
+            elif text.lower() in {"maximize", "max"}:
+                fullscreen.maximize_window()
+                speak("Window maximized.")
+                continue
+            elif text.lower() in {"minimize", "min"}:
+                fullscreen.minimize_window()
+                speak("Window minimized.")
+                continue
+            elif text.lower() in {"snap left"}:
+                fullscreen.snap_left()
+                speak("Window snapped to left.")
+                continue
+            elif text.lower() in {"snap right"}:
+                fullscreen.snap_right()
+                speak("Window snapped to right.")
+                continue
+            elif text.lower() in {"scan full", "full scan", "full computer scan"}:
+                speak("Starting full computer scan.")
+                from system.full_computer_scanner import run_full_computer_scan
+                result = run_full_computer_scan()
+                speak(f"Scan complete. Indexed {result.get('files_indexed', 0)} files.")
+                continue
+            elif text.lower() in {"close window", "close"}:
+                fullscreen.close_window()
+                speak("Closing window.")
+                continue
+            
+            if text.lower() in {"stop nova", "exit", "quit"}: 
+                speak("Goodbye.")
+                break
+            
             reply = handler.handle(text)
             if reply is None:
                 from assistant.brain import ask_nova
